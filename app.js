@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser');
 const users = require('./modelos/users');
-const Portaria = require('./modelos/portaria');
+const portarias = require('./modelos/portarias');
 const jwt = require('jsonwebtoken');
 const url = 'mongodb+srv://usuario2021:senha489@cluster0.tb4lv.mongodb.net/bdAdmin?retryWrites=true&w=majority';
 const bcrypt = require('bcrypt');
@@ -67,7 +67,7 @@ app.get('/', auth, (req, res) => {
 
 })
 
-app.post('/create', auth, (req, res) => {
+app.post('/create/usuario', auth, (req, res) => {
 
     const { nome, email, senha } = req.body;
     if (!nome || !email || !senha) return res.send({
@@ -95,7 +95,37 @@ app.post('/create', auth, (req, res) => {
     });
 })
 
-app.post('/auth', auth, (req, res) => {
+
+
+app.post('/create/portaria', auth, (req, res) => {
+
+    const { titulo, assunto, data } = req.body;
+    if (!titulo || !assunto || !data) return res.send({
+        error: 'Dados insuficientes!'
+    });
+
+    portarias.findOne({ titulo }, (err, data) => {
+        if (err) return res.send({
+            error: 'Erro ao buscar portaria!'
+        });
+
+        if (data) return res.send({
+            error: 'Portaria já cadastrada!'
+        });
+
+        users.create(req.body, (err, data) => {
+            if (err) return res.send({
+                error: 'Erro ao criar Poetaria!'
+            });
+
+            data.senha = undefined;
+            return res.send({ data, token: createUserToken(data.id) });
+
+        });
+    });
+})
+
+app.post('/auth/usuario', auth, (req, res) => {
 
     const { email, senha } = req.body;
 
@@ -126,6 +156,43 @@ app.post('/auth', auth, (req, res) => {
     });
 
 });
+
+
+
+app.post('/auth/portaria', auth, (req, res) => {
+
+    const { email, senha } = req.body;
+
+    if (!email || !senha) return res.send({
+        error: 'Dados insuficientes!'
+    });
+
+    users.findOne({ email }, (err, data) => {
+
+        if (err) return res.send({
+            error: 'Erro ao buscar usuário!'
+        });
+
+        if (!data) return res.send({
+            error: 'Usuário não registrado'
+        });
+
+        bcrypt.compare(senha, data.senha, (err, same) => {
+
+            if (!same) return res.send({
+                error: 'Erro ao autenticar usuário!'
+            });
+
+            return res.send({ data, token: createUserToken(data.id) });
+
+        });
+
+    });
+
+});
+
+
+
 
 const createUserToken = (userId) => {
 

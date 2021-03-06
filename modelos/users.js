@@ -29,6 +29,7 @@ const UserSchema = new Schema({
 
     matricula: {
         type: String,
+        required: true,
     }
 
 });

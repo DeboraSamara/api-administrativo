@@ -6,8 +6,13 @@ const PortariaSchema = new Schema({
     titulo: {
         type: String,
         required: true,
+    },
+    assunto: {
+        type: String,
+    },
+    data: {
+        default: Date,
     }
-
 
 });
 
