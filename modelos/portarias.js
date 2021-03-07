@@ -7,6 +7,7 @@ const PortariaSchema = new Schema({
         type: String,
         required: true,
     },
+
     assunto: {
         type: String,
         required: true,

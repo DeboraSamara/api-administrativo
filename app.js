@@ -69,8 +69,8 @@ app.get('/', auth, (req, res) => {
 
 app.post('/create/usuario', auth, (req, res) => {
 
-    const { nome, email, senha } = req.body;
-    if (!nome || !email || !senha) return res.send({
+    const { nome, email, senha, cargo, matricula } = req.body;
+    if (!nome || !email || !senha || !cargo || !matricula) return res.send({
         error: 'Dados insuficientes!'
     });
 
@@ -126,40 +126,26 @@ app.post('/create/portaria', auth, (req, res) => {
 })
 
 
+app.post('/auth/portaria', async (req, res) => {
+    try {
+        const { titulo } = req.body;
 
-/**app.post('/auth/portaria', auth, (req, res) => {
-
-    const { titulo } = req.body;
-
-    if (!titulo || !assunto || !data) return res.send({
-        error: 'Dados insuficientes!'
-    });
-
-    portarias.findOne({ titulo }, (err, data) => {
-
-        if (!data) return res.send({
-            error: 'Portaria não registrada'
+        if (!titulo) return res.send({
+            error: 'Dados insuficientes!'
         });
 
-    });
+        const portaria = await portarias.findOne({ titulo })
 
-});**/
-
-app.post('/auth/portaria', auth, (req, res) => {
-
-    const { titulo } = req.body;
-
-    if (!titulo) return res.send({
-        error: 'Dados insuficientes!'
-    });
-
-    portarias.findOne({ titulo }, (data) => {
-
-        if (!data) return res.send({
-            error: 'Portaria não registrada'
+        if (!portaria) return res.send({
+            error: 'Not found!'
         });
-    });
 
+        return res.send(portaria);
+    } catch {
+        return res.send({
+            error: 'Internal server error'
+        });
+    }
 });
 
 
