@@ -81,7 +81,7 @@ app.post('/create/usuario', auth, (req, res) => {
         error: 'Dados insuficientes!'
     });
 
-    users.findOne({ email }, (err, data) => {
+    users.findOne({ matricula, email }, (err, data) => {
         if (err) return res.send({
             error: 'Erro ao buscar usuáio!'
         });
