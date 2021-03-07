@@ -11,6 +11,11 @@ const PortariaSchema = new Schema({
     assunto: {
         type: String,
         required: true,
+    },
+
+    data: {
+        type: String,
+        default: Date.now,
     }
 
 });

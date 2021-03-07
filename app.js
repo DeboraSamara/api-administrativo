@@ -39,13 +39,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
-/**app.get('/', (req, res) => {
-
-    let obj = req.query;
-    
-    res.send(`Hello World! Você enviou nome ${obj.nome} e idade ${obj.idade}`)
-    
-})**/
 
 app.listen(3000, () => {
 
@@ -53,12 +46,26 @@ app.listen(3000, () => {
 
 })
 
-app.get('/', auth, (req, res) => {
+app.get('/users', auth, (req, res) => {
 
     users.find({}, (err, data) => {
 
         if (err) return res.send({
             error: 'Erro na consulta de usuário!'
+        });
+
+        return res.send(data);
+
+    });
+
+})
+
+app.get('/portarias', auth, (req, res) => {
+
+    portarias.find({}, (err, data) => {
+
+        if (err) return res.send({
+            error: 'Erro na consulta de portaria!'
         });
 
         return res.send(data);
@@ -99,8 +106,8 @@ app.post('/create/usuario', auth, (req, res) => {
 
 app.post('/create/portaria', auth, (req, res) => {
 
-    const { titulo, assunto, data } = req.body;
-    if (!titulo || !assunto || !data) return res.send({
+    const { titulo, assunto } = req.body;
+    if (!titulo || !assunto) return res.send({
         error: 'Dados insuficientes!'
     });
 
@@ -126,7 +133,7 @@ app.post('/create/portaria', auth, (req, res) => {
 })
 
 
-app.post('/auth/portaria', async (req, res) => {
+app.post('/return/portaria', async (req, res) => {
     try {
         const { titulo } = req.body;
 
@@ -137,7 +144,7 @@ app.post('/auth/portaria', async (req, res) => {
         const portaria = await portarias.findOne({ titulo })
 
         if (!portaria) return res.send({
-            error: 'Not found!'
+            error: 'Portaria não registrada!'
         });
 
         return res.send(portaria);
@@ -149,15 +156,15 @@ app.post('/auth/portaria', async (req, res) => {
 });
 
 
-app.post('/auth/usuario', auth, (req, res) => {
+app.post('/return/usuario', auth, (req, res) => {
 
-    const { email, senha } = req.body;
+    const { matricula, senha } = req.body;
 
-    if (!email || !senha) return res.send({
+    if (!matricula || !senha) return res.send({
         error: 'Dados insuficientes!'
     });
 
-    users.findOne({ email }, (err, data) => {
+    users.findOne({ matricula }, (err, data) => {
 
         if (err) return res.send({
             error: 'Erro ao buscar usuário!'
@@ -170,7 +177,7 @@ app.post('/auth/usuario', auth, (req, res) => {
         bcrypt.compare(senha, data.senha, (err, same) => {
 
             if (!same) return res.send({
-                error: 'Erro ao autenticar usuário!'
+                error: 'Erro ao autenticar usuário! Verifique sua senha.'
             });
 
             return res.send({ data, token: createUserToken(data.id) });
