@@ -9,9 +9,7 @@ const PortariaSchema = new Schema({
     },
     assunto: {
         type: String,
-    },
-    data: {
-        default: Date,
+        required: true,
     }
 
 });

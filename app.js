@@ -113,17 +113,55 @@ app.post('/create/portaria', auth, (req, res) => {
             error: 'Portaria já cadastrada!'
         });
 
-        users.create(req.body, (err, data) => {
+        portarias.create(req.body, (err, data) => {
             if (err) return res.send({
-                error: 'Erro ao criar Poetaria!'
+                error: 'Erro ao criar Portaria!'
             });
 
-            data.senha = undefined;
+
             return res.send({ data, token: createUserToken(data.id) });
 
         });
     });
 })
+
+
+
+/**app.post('/auth/portaria', auth, (req, res) => {
+
+    const { titulo } = req.body;
+
+    if (!titulo || !assunto || !data) return res.send({
+        error: 'Dados insuficientes!'
+    });
+
+    portarias.findOne({ titulo }, (err, data) => {
+
+        if (!data) return res.send({
+            error: 'Portaria não registrada'
+        });
+
+    });
+
+});**/
+
+app.post('/auth/portaria', auth, (req, res) => {
+
+    const { titulo } = req.body;
+
+    if (!titulo) return res.send({
+        error: 'Dados insuficientes!'
+    });
+
+    portarias.findOne({ titulo }, (data) => {
+
+        if (!data) return res.send({
+            error: 'Portaria não registrada'
+        });
+    });
+
+});
+
 
 app.post('/auth/usuario', auth, (req, res) => {
 
@@ -157,46 +195,16 @@ app.post('/auth/usuario', auth, (req, res) => {
 
 });
 
-
-
-app.post('/auth/portaria', auth, (req, res) => {
-
-    const { email, senha } = req.body;
-
-    if (!email || !senha) return res.send({
-        error: 'Dados insuficientes!'
-    });
-
-    users.findOne({ email }, (err, data) => {
-
-        if (err) return res.send({
-            error: 'Erro ao buscar usuário!'
-        });
-
-        if (!data) return res.send({
-            error: 'Usuário não registrado'
-        });
-
-        bcrypt.compare(senha, data.senha, (err, same) => {
-
-            if (!same) return res.send({
-                error: 'Erro ao autenticar usuário!'
-            });
-
-            return res.send({ data, token: createUserToken(data.id) });
-
-        });
-
-    });
-
-});
-
-
-
-
 const createUserToken = (userId) => {
 
     return jwt.sign({ id: userId }, 'umasenha', { expiresIn: '7d' });
 
 }
+
+const createPortariaToken = (portariaId) => {
+
+    return jwt.sign({ id: portariaId }, { expiresIn: '7d' });
+
+}
+
 
