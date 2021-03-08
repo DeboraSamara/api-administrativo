@@ -15,7 +15,7 @@ const PortariaSchema = new Schema({
 
     data: {
         type: String,
-        default: Date.now,
+        default: new Date(),
     }
 
 });
