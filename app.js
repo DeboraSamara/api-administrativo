@@ -81,9 +81,9 @@ app.post('/create/usuario', auth, (req, res) => {
         error: 'Dados insuficientes!'
     });
 
-    users.findOne({ matricula, email }, (err, data) => {
+    users.findOne({ matricula }, (err, data) => {
         if (err) return res.send({
-            error: 'Erro ao buscar usuáio!'
+            error: 'Erro ao buscar usuário!'
         });
 
         if (data) return res.send({
@@ -125,8 +125,7 @@ app.post('/create/portaria', auth, (req, res) => {
                 error: 'Erro ao criar Portaria!'
             });
 
-
-            return res.send({ data, token: createUserToken(data.id) });
+            return res.send({ data });
 
         });
     });
@@ -190,7 +189,7 @@ app.post('/return/usuario', auth, (req, res) => {
 
 const createUserToken = (userId) => {
 
-    return jwt.sign({ id: userId }, 'umasenha', { expiresIn: '7d' });
+    return jwt.sign({ id: userId }, 'umasenha', { expiresIn: '14d' });
 
 }
 

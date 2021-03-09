@@ -13,7 +13,6 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
         lowercase: true
     },
 
@@ -30,6 +29,11 @@ const UserSchema = new Schema({
     matricula: {
         type: String,
         required: true,
+    },
+
+    datacriacao: {
+        type: String,
+        default: new Date(),
     }
 
 });

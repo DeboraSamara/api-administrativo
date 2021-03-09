@@ -13,7 +13,7 @@ const PortariaSchema = new Schema({
         required: true,
     },
 
-    data: {
+    dataupload: {
         type: String,
         default: new Date(),
     }
