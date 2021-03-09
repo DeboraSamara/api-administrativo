@@ -194,10 +194,6 @@ const createUserToken = (userId) => {
 
 }
 
-const createPortariaToken = (portariaId) => {
 
-    return jwt.sign({ id: portariaId }, { expiresIn: '7d' });
-
-}
 
 
